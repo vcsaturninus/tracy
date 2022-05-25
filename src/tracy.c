@@ -153,19 +153,19 @@ unlock:
 }
 
 /*
- * Write a message to stdout, syslog, or a file.
+ * Write a message to stderr, syslog, or a file.
  *
  * You can choose where __Tracy_log() writes to by setting
  * an environment variable, as follows:
  * - TRACY_USE_SYSLOG   // write to the system logger
  * - TRACY_USE_LOG_FILE // write to file 
  *
- * If neither is specified, the default is to write to stdout.
+ * If neither is specified, the default is to write to stderr.
  * If TRACY_USE_LOG_FILE is set, then the default file to write
  * to is /tmp/tracy.log; this can be overridden by setting 
  * TRACY_LOG_FILE.
  *
- * TLDR: use stdout or a file to dump tracelog as syslog can't handle 
+ * TLDR: use stderr or a file to dump tracelog as syslog can't handle 
  * multline messages.
  *
  * Note that writing to syslog will most likely not do what you want:
@@ -201,11 +201,11 @@ static void __Tracy_log(char *fmt, ...){
         fclose(tf);
     }
     
-    // write to stdout
+    // write to stderr 
     else{
         va_list (vargs);
         va_start(vargs, fmt);
-        vfprintf(stdout, fmt, vargs);
+        vfprintf(stderr, fmt, vargs);
         va_end(vargs);
     }
 
@@ -220,7 +220,7 @@ static void __Tracy_log(char *fmt, ...){
  * is SHARED by all threads i.e. it's not per-thread.
  *
  * The tracelog is built piecemeal into a long string that
- * gets printed out (to stdout, a file, or syslog) all at 
+ * gets printed out (to stderr, a file, or syslog) all at 
  * once via __Tracy_log().
  */
 void Tracy_dump(void){
@@ -267,7 +267,7 @@ void Tracy_dump(void){
         }
     }
     
-    // write to file, stdout, or syslog
+    // write to file, stderr, or syslog
     __Tracy_log("%s", buff); 
 
 unlock:
@@ -286,7 +286,6 @@ unlock:
  * little significance.
  */
 static void sighandler(int signum, siginfo_t *siginfo, void *ucontext){
-    printf("in sighandler\n");
     __Tracy_log("^^^^^ '%s' terminated with signal %i (%s), caused by error code %i (%s)\n", 
                             PROG_NAME, 
                             siginfo->si_signo, 
@@ -326,7 +325,7 @@ void __register_sighandler(void){
  *
  * Initialize file-scoped global structures and variables
  * (the actual tracelog struct, flags saying whether to write
- * to syslog, stdout, or a file etc), register signal handler,
+ * to syslog, stderr, or a file etc), register signal handler,
  * etc.
  */
 void Tracy_init(void){
