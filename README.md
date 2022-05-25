@@ -17,17 +17,17 @@ However, there are a few disadvantages to it:
    you might like: the addresses of the functions are printed, but not
    the names. The names can be obtained with some extra work, though.
 
-Using `tracy` no the other hand has the following advantages:
+Using `tracy` on the other hand has the following advantages:
  * no extra linker or compiler flags are necessary
  * the output is more informative, showing the function names
  * it is not compiler or platform specific and can be used anywhere
 
 But it has some significant drawbacks as well:
- * it requires more manual work and function must be explicitly
+ * it requires more manual work and functions must be explicitly
    decorated to make `tracy` aware of them. That is to say, given
    functions `a`, `b`, and `c`, if `a` calls `b` and `b` calls `c` but
-   only `c` is decorated, then as far as `tracy` knows the only `c`
-   is on the call stack.
+   only `c` is decorated, then as far as `tracy` knows only `c` is
+   ever on the call stack.
 
 These disadvantages might not be as significant as you might think:
  * for one thing, perhaps you're _interested_ in figuring out if one
@@ -152,7 +152,7 @@ with `return` , as usual, foregoing any call to `__tracy_pop`.
 
 ### Log location
 
-`Tracy` can write the tracelog dump to either `stdout`, a file, or to
+`Tracy` can write the tracelog dump to either `stderr`, a file, or to
 `syslog`. 
 
 - It will write to a file if the `TRACY_USE_LOG_FILE`
